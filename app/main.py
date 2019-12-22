@@ -3,13 +3,15 @@ from typing import List
 from fastapi import Depends, FastAPI, Header, HTTPException
 import uvicorn
 
-from app.routers import items, users
+from app import crud, models, schemas
+from app.auth import oauth2_scheme, UserInDB
 from app.database import engine
+from app.routers import items, users, auth
 
-from . import crud, models, schemas
-
+# Initialize Database
 models.Base.metadata.create_all(bind=engine)
 
+# Initialize FastAPI
 app = FastAPI(
     title="My Super Project",
     description="This is a very fancy project, with auto docs for the API and everything",
@@ -18,26 +20,18 @@ app = FastAPI(
     redoc_url=None
 )
 
-
 @app.get("/")
 def root():
     a = "a"
     b = "b" + a
     return {"hello world": b}
 
-
-
-async def get_token_header(x_token: str = Header(...)):
-    if x_token != "fake-super-secret-token":
-        raise HTTPException(status_code=400, detail="X-Token header invalid")
-
-
+app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(
     items.router,
     prefix="/items",
     tags=["items"],
-    dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
 

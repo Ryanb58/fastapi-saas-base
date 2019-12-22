@@ -12,6 +12,7 @@ services:
 
   app:
     build: .
+    command: /start-reload.sh
     depends_on:
      - db
     ports:
