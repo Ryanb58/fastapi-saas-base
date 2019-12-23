@@ -2,12 +2,15 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, LargeBinary
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from passlib.context import CryptContext
 
-from app.database import Base
-from app.auth import verify_password
-from app.auth import get_password_hash
+from app.models.base import BaseModel
 
-class Account(Base):
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+class Account(BaseModel):
     __tablename__ = "accounts"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -29,7 +32,7 @@ class Account(Base):
         return "{} {}".format(self.first_name, self.last_name)
 
 
-class EmailAddress(Base):
+class EmailAddress(BaseModel):
     __tablename__ = "email_addresses"
 
     id = Column(Integer, primary_key=True)
@@ -54,7 +57,7 @@ class EmailAddress(Base):
         return "<EmailAddress {}>".format(self.email)
 
 
-class Password(Base):
+class Password(BaseModel):
     __tablename__ = "passwords"
 
     id = Column(Integer, primary_key=True)
@@ -87,13 +90,13 @@ class Password(Base):
         return self._password
 
     @password.setter
-    def password(self, plaintext_password):
-        self.validate_password(plaintext_password)
-        self._password = get_password_hash(plaintext_password)
+    def password(self, plain_password):
+        self.validate_password(plain_password)
+        self._password = pwd_context.hash(plain_password)
 
     @hybrid_method
-    def is_correct_password(self, plaintext_password):
-        return verify_password(plaintext_password, self.password)
+    def is_correct_password(self, plain_password):
+        return pwd_context.verify(plain_password, self.password)
 
 
 # class PasswordReset(BaseModel):

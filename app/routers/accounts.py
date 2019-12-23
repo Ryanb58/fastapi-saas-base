@@ -17,7 +17,7 @@ def create_one(account: schemas.AccountCreate, db: Session = Depends(get_db)):
     db_account = get_account_by_email(db, email=account.email)
     if db_account:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return create_account(db=db, account=account)
+    return create_account(db, account=account)
 
 
 @router.get("/", response_model=List[schemas.Account])

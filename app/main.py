@@ -4,7 +4,6 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 import uvicorn
 
 from app import models, schemas
-from app.auth import oauth2_scheme, UserInDB
 from app.database import engine, Base
 from app.routers import auth, accounts
 

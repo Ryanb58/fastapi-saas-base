@@ -1,9 +1,11 @@
 from sqlalchemy.orm import Session
+from fastapi import Depends
 
 from app.schemas import account as schemas  
 from app.models.account import Account
 from app.models.account import EmailAddress
 from app.models.account import Password
+
 
 def get_account(db: Session, id: int):
     return db.query(Account).filter(Account.id == id).first()
