@@ -1,8 +1,4 @@
-from starlette.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
-
+from app.tests import client
 
 # def test_read_main():
 #     response = client.get("/")

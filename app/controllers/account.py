@@ -24,7 +24,7 @@ def create_account(db: Session, account: schemas.AccountCreate):
     account_obj = Account(
         first_name=account.first_name,
         last_name=account.last_name,
-        is_system_admin=True
+        is_system_admin=account.is_system_admin
     )
     db.add(account_obj)
     db.flush()
@@ -47,3 +47,6 @@ def create_account(db: Session, account: schemas.AccountCreate):
     db.refresh(account_obj)
 
     return account_obj
+
+def get_account_email_addresses(db: Session, account_id: int, skip: int = 0, limit: int = 100):
+    return db.query(EmailAddress).filter(EmailAddress.account_id == account_id).all() or []

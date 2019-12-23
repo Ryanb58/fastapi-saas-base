@@ -14,10 +14,15 @@ from app.dependencies.auth import get_current_account
 router = APIRouter()
 
 @router.post("/", response_model=schemas.Account)
-def create_one(account: schemas.AccountCreate, db: Session = Depends(get_db)):
+def create_one(account: schemas.AccountCreate, db: Session = Depends(get_db), current_user: schemas.Account = Depends(get_current_account)):
     db_account = get_account_by_email(db, email=account.email)
     if db_account:
         raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Can not create a system admin if you yourself are not one.
+    if not current_user.is_system_admin:
+        account.is_system_admin = False
+
     return create_account(db, account=account)
 
 

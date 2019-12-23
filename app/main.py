@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db
 from app.dependencies.auth import get_current_account
 from app.database import engine, Base
-from app.routers import auth, accounts
+from app.routers import auth, accounts, email_addresses
 
 # Create tables in database.
 Base.metadata.create_all(bind=engine)
@@ -37,7 +37,8 @@ async def create_admin():
         "email": "admin@example.com",
         "password": "password123",
         "first_name": "Admin",
-        "last_name": "Istrator"
+        "last_name": "Istrator",
+        "is_system_admin": True
     }
     account_obj = get_account_by_email(db, email=account_data['email'])
     if account_obj:
@@ -60,6 +61,13 @@ app.include_router(
     accounts.router,
     prefix="/accounts",
     tags=["accounts"],
+    dependencies=[Depends(get_current_account)],
+    responses={404: {"description": "Not found"}},
+)
+app.include_router(
+    email_addresses.router,
+    prefix="/email_addresses",
+    tags=["email_addresses"],
     dependencies=[Depends(get_current_account)],
     responses={404: {"description": "Not found"}},
 )
