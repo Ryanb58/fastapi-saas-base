@@ -5,6 +5,7 @@ import uvicorn
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
+from app.dependencies.auth import get_current_account
 from app.database import engine, Base
 from app.routers import auth, accounts
 
@@ -48,10 +49,6 @@ async def create_admin():
     )
     db.close()
 
-
-
-
-
 # Add routers
 app.include_router(
     auth.router,
@@ -63,6 +60,7 @@ app.include_router(
     accounts.router,
     prefix="/accounts",
     tags=["accounts"],
+    dependencies=[Depends(get_current_account)],
     responses={404: {"description": "Not found"}},
 )
 

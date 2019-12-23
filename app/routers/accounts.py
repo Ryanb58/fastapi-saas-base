@@ -9,7 +9,7 @@ from app.controllers.account import get_account_by_email
 from app.controllers.account import get_account
 from app.controllers.account import get_accounts
 from app.controllers.account import create_account
-from app.controllers.auth import get_current_account
+from app.dependencies.auth import get_current_account
 
 router = APIRouter()
 

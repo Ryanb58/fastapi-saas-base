@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 from app.dependencies import get_db
-from app.controllers.auth import get_current_account, ACCESS_TOKEN_EXPIRE_MINUTES, Token, authenticate_user, create_access_token
+from app.controllers.auth import ACCESS_TOKEN_EXPIRE_MINUTES, Token, authenticate_user, create_access_token
+from app.dependencies.auth import get_current_account
 from app.schemas.account import Account
 router = APIRouter()
 

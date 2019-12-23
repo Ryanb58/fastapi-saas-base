@@ -2,14 +2,12 @@ from datetime import datetime, timedelta
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jwt import PyJWTError
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
 import jwt
 
 from app.dependencies import get_db
 from app.schemas.auth import Token
-from app.schemas.auth import TokenData
 from app.schemas.account import Account
 from app.controllers.account import get_account
 from app.controllers.account import get_account_by_email
@@ -49,29 +47,3 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-
-
-async def get_current_account(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
-        status_code=HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        account_id: str = payload.get("sub")
-        if account_id is None:
-            raise credentials_exception
-        token_data = TokenData(account_id=account_id)
-    except PyJWTError:
-        raise credentials_exception
-    account = get_account(db, id=token_data.account_id)
-    if account is None:
-        raise credentials_exception
-    return account
-
-
-# async def get_current_active_account(current_user: Account = Depends(get_current_account)):
-#     if current_user.disabled:
-#         raise HTTPException(status_code=400, detail="Inactive user")
-#     return current_user
