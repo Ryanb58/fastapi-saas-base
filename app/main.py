@@ -3,13 +3,13 @@ from typing import List
 from fastapi import Depends, FastAPI, Header, HTTPException
 import uvicorn
 
-from app import crud, models, schemas
+from app import models, schemas
 from app.auth import oauth2_scheme, UserInDB
-from app.database import engine
-from app.routers import items, users, auth
+from app.database import engine, Base
+from app.routers import auth, accounts
 
-# Initialize Database
-models.Base.metadata.create_all(bind=engine)
+
+Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI
 app = FastAPI(
@@ -27,11 +27,10 @@ def root():
     return {"hello world": b}
 
 app.include_router(auth.router)
-app.include_router(users.router)
 app.include_router(
-    items.router,
-    prefix="/items",
-    tags=["items"],
+    accounts.router,
+    prefix="/accounts",
+    tags=["accounts"],
     responses={404: {"description": "Not found"}},
 )
 

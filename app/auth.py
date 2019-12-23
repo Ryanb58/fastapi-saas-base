@@ -1,12 +1,15 @@
 from datetime import datetime, timedelta
 
-import jwt
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt import PyJWTError
 from passlib.context import CryptContext
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
+import jwt
+
+from app.dependencies import get_db
 
 # to get a string like this run:
 # openssl rand -hex 32
@@ -24,8 +27,6 @@ fake_users_db = {
     }
 }
 
-def fake_hash_password(password: str):
-    return "fakehashed" + password
 
 class Token(BaseModel):
     access_token: str
@@ -59,19 +60,27 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+def get_account(username: str,  db: Session = Depends(get_db)):
+    # Get the user from database.
+    email_address_obj = EmailAddress.query.filter_by(email=username, verified=True).first()
+    if not email_address_obj:
+        return None
+    return email_address_obj.acccount
 
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
-    if not user:
+def authenticate_user(username: str, plaintext_password: str):
+    account_obj = get_account(fake_db, username)
+    if not account_obj:
         return False
-    if not verify_password(password, user.hashed_password):
+
+    password_obj = (
+        Password.query.filter_by(account_id=account_obj.id)
+        .order_by(Password.created_on.desc())
+        .first()
+    )
+    if not password_obj.is_correct_password(plaintext_password):
         return False
-    return user
+    return account_obj
 
 
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
@@ -93,13 +102,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        account_id: str = payload.get("sub")
+        if account_id is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(account_id=account_id)
     except PyJWTError:
         raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
+    user = get_account(username=token_data.account_id)
     if user is None:
         raise credentials_exception
     return user
