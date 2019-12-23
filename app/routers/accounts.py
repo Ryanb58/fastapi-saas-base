@@ -9,6 +9,7 @@ from app.controllers.account import get_account_by_email
 from app.controllers.account import get_account
 from app.controllers.account import get_accounts
 from app.controllers.account import create_account
+from app.controllers.auth import get_current_account
 
 router = APIRouter()
 
@@ -24,6 +25,11 @@ def create_one(account: schemas.AccountCreate, db: Session = Depends(get_db)):
 def read_many(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     accounts = get_accounts(db, skip=skip, limit=limit)
     return accounts
+
+@router.get("/me", response_model=schemas.Account)
+async def read_me(current_user: schemas.Account = Depends(get_current_account)):
+    """Get logged in user details."""
+    return current_user
 
 
 @router.get("/{id}", response_model=schemas.Account)

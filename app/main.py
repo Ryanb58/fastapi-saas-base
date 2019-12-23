@@ -2,30 +2,63 @@ from typing import List
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 import uvicorn
+from sqlalchemy.orm import Session
 
-from app import models, schemas
+from app.dependencies import get_db
 from app.database import engine, Base
 from app.routers import auth, accounts
 
-
+# Create tables in database.
 Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI
 app = FastAPI(
-    title="My Super Project",
-    description="This is a very fancy project, with auto docs for the API and everything",
+    title="FastAPI Base",
+    description="This is a base app to be used in the future for real SAAS apps and hackathons.",
     version="0.0.1",
     docs_url="/docs", 
     redoc_url=None
 )
 
-@app.get("/")
-def root():
-    a = "a"
-    b = "b" + a
-    return {"hello world": b}
+# Startup Actions
 
-app.include_router(auth.router)
+@app.on_event("startup")
+async def create_admin():
+    db = get_db()
+    """If admin account doesn't exist, create it."""
+    from app.database import SessionLocal
+    from app.controllers.account import create_account
+    from app.controllers.account import get_account_by_email
+    from app.schemas.account import AccountCreate
+
+    db = SessionLocal()
+    account_data = {
+        "email": "admin@example.com",
+        "password": "password123",
+        "first_name": "Admin",
+        "last_name": "Istrator"
+    }
+    account_obj = get_account_by_email(db, email=account_data['email'])
+    if account_obj:
+        return
+    
+    create_account(
+        db,
+        AccountCreate(**account_data)
+    )
+    db.close()
+
+
+
+
+
+# Add routers
+app.include_router(
+    auth.router,
+    prefix="/auth",
+    tags=["auth"],
+    responses={404: {"description": "Not found"}},
+)
 app.include_router(
     accounts.router,
     prefix="/accounts",

@@ -25,13 +25,4 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": account.id}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
-
-@router.get("/users/me/", response_model=Account)
-async def read_users_me(current_user: Account = Depends(get_current_account)):
-    return current_user
-
-
-@router.get("/users/me/items/")
-async def read_own_items(current_user: Account = Depends(get_current_account)):
-    return [{"item_id": "Foo", "owner": current_user.username}]
+    
