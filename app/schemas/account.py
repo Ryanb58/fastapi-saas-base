@@ -31,7 +31,7 @@ class EmailAddressBase(BaseModel):
 
 
 class EmailAddressCreate(EmailAddressBase):
-    pass
+    account_id: int = None
 
 
 class EmailAddress(EmailAddressBase):

@@ -6,7 +6,6 @@ from sqlalchemy.orm import sessionmaker
 SQLALCHEMY_DATABASE_URL = "postgresql://postgres:password@db/db"
 
 
-# check_same_thread only needed for SQLite
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
 )

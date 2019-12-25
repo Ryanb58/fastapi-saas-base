@@ -1,7 +1,12 @@
-from app.tests import client
+from app.tests.base import TestBase
 
 
-def test_read_main():
-    response = client.get("/accounts")
-    # assert response.status_code == 200
-    # assert response.json() == {"message": "Hello World"}
+# class LoginTestCase(TestBase):
+
+#     def test_unauth_list(self):
+#         response = self.client.get("/accounts")
+#         assert response.status_code == 401
+
+#     def test_list(self):
+#         response = self.client.get("/accounts")
+#         assert response.status_code == 200

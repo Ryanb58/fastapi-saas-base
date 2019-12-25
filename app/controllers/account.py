@@ -6,6 +6,7 @@ from app.models.account import Account
 from app.models.account import EmailAddress
 from app.models.account import Password
 
+# Accounts
 
 def get_account(db: Session, id: int):
     return db.query(Account).filter(Account.id == id).first()
@@ -48,5 +49,22 @@ def create_account(db: Session, account: schemas.AccountCreate):
 
     return account_obj
 
-def get_account_email_addresses(db: Session, account_id: int, skip: int = 0, limit: int = 100):
+# Email Addresses
+
+def get_email_addresses(db: Session, account_id: int = None, skip: int = 0, limit: int = 100):
     return db.query(EmailAddress).filter(EmailAddress.account_id == account_id).all() or []
+
+def create_email_address(db: Session, email: schemas.EmailAddressCreate):
+    """Add an email_address to a users account."""
+    email_obj = EmailAddress(
+        account_id=email.account_id,
+        email=email.email,
+        primary=email.primary,
+        verified=email.verified
+    )
+
+    db.add(email_obj)
+    db.commit()
+    db.refresh(email_obj)
+
+    return email_obj

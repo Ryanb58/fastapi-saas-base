@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db
 from app.dependencies.auth import get_current_account
 from app.database import engine, Base
-from app.routers import auth, accounts, email_addresses
+from app.routers import auth, accounts, email_addresses, random
 
 # Create tables in database.
 Base.metadata.create_all(bind=engine)
@@ -22,7 +22,6 @@ app = FastAPI(
 )
 
 # Startup Actions
-
 @app.on_event("startup")
 async def create_admin():
     db = get_db()
@@ -50,6 +49,7 @@ async def create_admin():
     )
     db.close()
 
+
 # Add routers
 app.include_router(
     auth.router,
@@ -71,6 +71,8 @@ app.include_router(
     dependencies=[Depends(get_current_account)],
     responses={404: {"description": "Not found"}},
 )
+
+app.include_router(random.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

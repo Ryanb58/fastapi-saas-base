@@ -7,3 +7,15 @@ cleanup: ## Cleanup
 dbshell: ## Open a shell to the db running in the docker container (must run in container)
 	pip install pgcli
 	pgcli -h db -p 5432 -u postgres
+
+.PHONY: test
+test: ## Run unittests.
+	docker-compose run --service-ports app make run-tests
+
+.PHONY: run-tests
+run-tests: ## Run tests (must run in container)
+	pytest -s --cov=phire --no-cov-on-fail --cov-fail-under=93
+
+.PHONY: shell
+shell: ## Run container.
+	docker-compose run --service-ports app /bin/bash
