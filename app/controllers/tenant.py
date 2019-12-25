@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends
+from slugify import slugify
 
 from app.schemas import tenant as schemas  
 from app.models.tenant import Tenant
@@ -15,7 +16,7 @@ def create_tenant(db: Session, tenant: schemas.TenantCreate):
     """Create a tenant."""
     tenant_obj = Tenant(
         name=tenant.name,
-        slug=tenant.slug,
+        slug=slugify(value) # Slug is only set once, must contact support to change.
     )
     db.add(tenant_obj)
     db.commit()

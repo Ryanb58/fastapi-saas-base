@@ -13,4 +13,3 @@ class Tenant(BaseModel):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(128))
     slug = Column(String(128), unique=True) # Slug of the name for the URL.
-
