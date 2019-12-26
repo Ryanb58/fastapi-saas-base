@@ -28,4 +28,4 @@ def subscribe_customer_to_plan(customer_stripe_id, plan_stripe_ids):
 
 
 def get_product_plans(product_strip_id):
-    
+    pass
