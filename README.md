@@ -3,6 +3,7 @@ Building a robust API base for a SAAS application.
 ### Requirements:
 - JSON
 - JWT Authentication
+- Unittests
 - Multi Tenant
 - RBAC
 - Stripe integration
