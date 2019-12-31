@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from starlette.status import HTTP_201_CREATED, HTTP_200_OK
 
 from app.dependencies import get_db
 from app.schemas import account as schemas  
@@ -10,7 +11,7 @@ from app.dependencies.auth import get_current_account
 
 router = APIRouter()
 
-@router.post("/", response_model=schemas.EmailAddress)
+@router.post("/", response_model=schemas.EmailAddress, status_code=HTTP_201_CREATED)
 def create_one(
     email: schemas.EmailAddressCreate, 
     db_session: Session = Depends(get_db), 
@@ -28,7 +29,7 @@ def create_one(
     return create_email_address(db_session, email)
 
 
-@router.get("/", response_model=List[schemas.EmailAddress])
+@router.get("/", response_model=List[schemas.EmailAddress], status_code=HTTP_200_OK)
 def read_many(
     skip: int = 0, 
     limit: int = 100, 

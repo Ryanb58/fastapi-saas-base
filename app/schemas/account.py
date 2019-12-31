@@ -25,9 +25,6 @@ class Account(AccountBase):
 
 class EmailAddressBase(BaseModel):
     email: str
-    primary: bool
-    verified: bool
-    verified_on: datetime = None
 
 
 class EmailAddressCreate(EmailAddressBase):
@@ -36,6 +33,9 @@ class EmailAddressCreate(EmailAddressBase):
 
 class EmailAddress(EmailAddressBase):
     id: int
-
+    primary: bool
+    verified: bool
+    verified_on: datetime = None
+    
     class Config:
         orm_mode = True

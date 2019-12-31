@@ -59,8 +59,8 @@ def create_email_address(db_session: Session, email: schemas.EmailAddressCreate)
     email_obj = EmailAddress(
         account_id=email.account_id,
         email=email.email,
-        primary=email.primary,
-        verified=email.verified
+        primary=False,
+        verified=False
     )
 
     db_session.add(email_obj)
