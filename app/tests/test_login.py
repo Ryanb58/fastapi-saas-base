@@ -1,5 +1,5 @@
 from app.tests.base import TestBase
-
+from app.models.account import Account
 
 class LoginTestCase(TestBase):
 
@@ -13,7 +13,10 @@ class LoginTestCase(TestBase):
 
 
     def test_invalid(self):
+        self.create_system_admin()
         payload = {'username': 'admin@example.com', 'password': 'password'}
         response = self.client.post("/auth/token", data=payload)
         assert response.status_code == 401
 
+    def test_db_is_rolled_back(self):
+        assert 0 == self.db_session.query(Account).count()

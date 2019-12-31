@@ -12,12 +12,12 @@ from app.models.tenant import Tenant
 router = APIRouter()
 
 @router.get("/random")
-def random(tenant_obj: Tenant = Depends(get_tenant), db: Session = Depends(get_db)):
+def random(tenant_obj: Tenant = Depends(get_tenant), db_session: Session = Depends(get_db)):
     if not tenant_obj:
         tenant_obj = Tenant(
             name="Ten 1",
             slug="ten-1",
         )
-        db.add(tenant_obj)
-        db.commit()
+        db_session.add(tenant_obj)
+        db_session.commit()
     return tenant_obj

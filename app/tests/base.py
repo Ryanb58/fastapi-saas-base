@@ -3,20 +3,25 @@ from unittest import TestCase
 from starlette.testclient import TestClient
 
 from app.main import app
-from app.database import engine, Base, SessionLocal
+from app.database import engine, Base, DBSession
 
 
 class TestBase(TestCase):
+    
     def setUp(self):
-        self.db_session = SessionLocal()
-        # Configure Search DDL triggers.
-        Base.metadata.create_all(bind=engine)
+        self.db_session = DBSession()
+        self.connection = engine.connect()
+
+        # # Configure Search DDL triggers.
+        Base.metadata.drop_all(self.connection)
+        Base.metadata.create_all(self.connection)
+        
         # TODO: Create admin.
         self.client = TestClient(app)
 
     def tearDown(self):
-        self.db_session.remove()
-        Base.metadata.create_all(bind=engine)
+        self.db_session.rollback()
+        self.db_session.close()
 
     def create_system_admin(self, *args, **kwargs):
         from app.controllers.account import create_account

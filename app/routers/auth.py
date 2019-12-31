@@ -13,8 +13,8 @@ router = APIRouter()
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    account = authenticate_user(db, form_data.username, form_data.password)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db_session: Session = Depends(get_db)):
+    account = authenticate_user(db_session, form_data.username, form_data.password)
     if not account:
         raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,

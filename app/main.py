@@ -30,14 +30,13 @@ app = FastAPI(
 # Startup Actions
 @app.on_event("startup")
 async def create_admin():
-    db = get_db()
     """If admin account doesn't exist, create it."""
-    from app.database import SessionLocal
+    from app.database import DBSession
     from app.controllers.account import create_account
     from app.controllers.account import get_account_by_email
     from app.schemas.account import AccountCreate
 
-    db = SessionLocal()
+    db_session = DBSession()
     account_data = {
         "email": "admin@example.com",
         "password": "password123",
@@ -45,15 +44,15 @@ async def create_admin():
         "last_name": "Istrator",
         "is_system_admin": True
     }
-    account_obj = get_account_by_email(db, email=account_data['email'])
+    account_obj = get_account_by_email(db_session, email=account_data['email'])
     if account_obj:
         return
     
     create_account(
-        db,
+        db_session,
         AccountCreate(**account_data)
     )
-    db.close()
+    db_session.close()
 
 
 # Add routers

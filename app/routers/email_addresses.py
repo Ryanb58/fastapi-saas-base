@@ -13,26 +13,26 @@ router = APIRouter()
 @router.post("/", response_model=schemas.EmailAddress)
 def create_one(
     email: schemas.EmailAddressCreate, 
-    db: Session = Depends(get_db), 
+    db_session: Session = Depends(get_db), 
     current_user: schemas.Account = Depends(get_current_account)
     ):
 
     # Can not add an email address that is already in use.
-    db_email = get_account_by_email(db, email=email.email)
+    db_email = get_account_by_email(db_session, email=email.email)
     if db_email:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     # Set the account_id from the current logged in user.
     email.account_id = current_user.id
 
-    return create_email_address(db, email)
+    return create_email_address(db_session, email)
 
 
 @router.get("/", response_model=List[schemas.EmailAddress])
 def read_many(
     skip: int = 0, 
     limit: int = 100, 
-    db: Session = Depends(get_db), 
+    db_session: Session = Depends(get_db), 
     current_user: schemas.Account = Depends(get_current_account)
     ):
-    return get_email_addresses(db, account_id=current_user.id, skip=skip, limit=limit)
+    return get_email_addresses(db_session, account_id=current_user.id, skip=skip, limit=limit)

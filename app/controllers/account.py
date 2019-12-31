@@ -8,27 +8,27 @@ from app.models.account import Password
 
 # Accounts
 
-def get_account(db: Session, id: int):
-    return db.query(Account).filter(Account.id == id).first()
+def get_account(db_session: Session, id: int):
+    return db_session.query(Account).filter(Account.id == id).first()
 
-def get_account_by_email(db: Session, email: str):
-    email_obj = db.query(EmailAddress).filter(EmailAddress.email == email).first()
+def get_account_by_email(db_session: Session, email: str):
+    email_obj = db_session.query(EmailAddress).filter(EmailAddress.email == email).first()
     if not email_obj:
         return None
     return email_obj.account
 
-def get_accounts(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Account).offset(skip).limit(limit).all()
+def get_accounts(db_session: Session, skip: int = 0, limit: int = 100):
+    return db_session.query(Account).offset(skip).limit(limit).all()
 
-def create_account(db: Session, account: schemas.AccountCreate):
+def create_account(db_session: Session, account: schemas.AccountCreate):
     """Create an user account."""
     account_obj = Account(
         first_name=account.first_name,
         last_name=account.last_name,
         is_system_admin=account.is_system_admin
     )
-    db.add(account_obj)
-    db.flush()
+    db_session.add(account_obj)
+    db_session.flush()
 
     email_obj = EmailAddress(
         account_id=account_obj.id,
@@ -42,19 +42,19 @@ def create_account(db: Session, account: schemas.AccountCreate):
         password=account.password
     )
 
-    db.add(email_obj)
-    db.add(password_obj)
-    db.commit()
-    db.refresh(account_obj)
+    db_session.add(email_obj)
+    db_session.add(password_obj)
+    db_session.commit()
+    db_session.refresh(account_obj)
 
     return account_obj
 
 # Email Addresses
 
-def get_email_addresses(db: Session, account_id: int = None, skip: int = 0, limit: int = 100):
-    return db.query(EmailAddress).filter(EmailAddress.account_id == account_id).all() or []
+def get_email_addresses(db_session: Session, account_id: int = None, skip: int = 0, limit: int = 100):
+    return db_session.query(EmailAddress).filter(EmailAddress.account_id == account_id).all() or []
 
-def create_email_address(db: Session, email: schemas.EmailAddressCreate):
+def create_email_address(db_session: Session, email: schemas.EmailAddressCreate):
     """Add an email_address to a users account."""
     email_obj = EmailAddress(
         account_id=email.account_id,
@@ -63,8 +63,8 @@ def create_email_address(db: Session, email: schemas.EmailAddressCreate):
         verified=email.verified
     )
 
-    db.add(email_obj)
-    db.commit()
-    db.refresh(email_obj)
+    db_session.add(email_obj)
+    db_session.commit()
+    db_session.refresh(email_obj)
 
     return email_obj

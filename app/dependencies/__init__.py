@@ -1,9 +1,9 @@
-from app.database import SessionLocal
+from app.database import DBSession
 
 # Dependency
 def get_db():
     try:
-        db = SessionLocal()
-        yield db
+        db_session = DBSession()
+        yield db_session
     finally:
-        db.close()
+        db_session.close()

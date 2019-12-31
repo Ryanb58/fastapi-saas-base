@@ -9,7 +9,7 @@ from app.dependencies import get_db
 from app.controllers.auth import oauth2_scheme, SECRET_KEY, ALGORITHM, get_account
 from app.schemas.auth import TokenData
 
-async def get_current_account(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def get_current_account(db_session: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -23,7 +23,7 @@ async def get_current_account(db: Session = Depends(get_db), token: str = Depend
         token_data = TokenData(account_id=account_id)
     except PyJWTError:
         raise credentials_exception
-    account = get_account(db, id=token_data.account_id)
+    account = get_account(db_session, id=token_data.account_id)
     if account is None:
         raise credentials_exception
     return account
