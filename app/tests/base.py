@@ -36,7 +36,6 @@ class TestBase(TestCase):
         ))
 
     def auth_headers(self, email="admin@example.com", password="password123"):
-        resp = self.client.post(
-            "/auth/token", json={"email": email, "password": password}
-        )
-        return {"Authorization": "Bearer " + resp.json.get("access_token")}
+        payload = {'username': email, 'password': password}
+        resp = self.client.post("/auth/token", data=payload)
+        return {"Authorization": "Bearer " + resp.json().get("access_token")}

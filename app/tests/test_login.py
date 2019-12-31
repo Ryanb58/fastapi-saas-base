@@ -11,12 +11,9 @@ class LoginTestCase(TestBase):
         assert response.json().get('access_token', False)
         assert response.json().get('token_type', False) == "bearer"
 
-
     def test_invalid(self):
         self.create_system_admin()
         payload = {'username': 'admin@example.com', 'password': 'password'}
         response = self.client.post("/auth/token", data=payload)
         assert response.status_code == 401
-
-    def test_db_is_rolled_back(self):
-        assert 0 == self.db_session.query(Account).count()
+        
