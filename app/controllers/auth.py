@@ -26,6 +26,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 def authenticate_user(db_session: Session, username: str, plaintext_password: str):
     account_obj = get_account_by_email(db_session, email=username)
+
+    # Must have an account.
     if not account_obj:
         return False
 

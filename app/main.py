@@ -42,6 +42,7 @@ async def create_admin():
         "first_name": "Admin",
         "last_name": "Istrator",
         "is_system_admin": True,
+        "is_active": True
     }
     account_obj = get_account_by_email(db_session, email=account_data["email"])
     if account_obj:

@@ -31,6 +31,11 @@ class RegisterTestCase(TestBase):
         assert self.db_session.query(Tenant).count() == 1
         assert self.db_session.query(Tenant).first().accounts.count() == 1
 
+        # Should not be able to login until after they have verified their email.
+        payload = {"username": "andy.bernard@example.com", "password": "password123"}
+        response = self.client.post("/auth/token", data=payload)
+        assert response.status_code == 409
+
     # def test_duplicate(self):
     #     payload = {
     #         'first_name': 'Andy',

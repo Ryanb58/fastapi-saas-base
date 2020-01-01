@@ -33,10 +33,11 @@ def create_account(
     email: str,
     password: str,
     is_system_admin: bool = False,
+    is_active: bool = False,
 ):
     """Create an user account."""
     account_obj = Account(
-        first_name=first_name, last_name=last_name, is_system_admin=is_system_admin
+        first_name=first_name, last_name=last_name, is_system_admin=is_system_admin, is_active=is_active
     )
     db_session.add(account_obj)
     db_session.flush()

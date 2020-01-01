@@ -27,6 +27,7 @@ class Account(BaseModel):
     last_name = Column(String(100))
 
     is_system_admin = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=False)
 
     def __repr__(self):
         return "<Account {} - {} {}>".format(self.id, self.first_name, self.last_name)

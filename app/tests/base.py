@@ -28,13 +28,12 @@ class TestBase(TestCase):
 
         return create_account(
             self.db_session,
-            AccountCreate(
-                first_name="Admin",
-                last_name="Istrator",
-                is_system_admin=True,
-                email="admin@example.com",
-                password="password123",
-            ),
+            first_name="Admin",
+            last_name="Istrator",
+            email="admin@example.com",
+            password="password123",
+            is_system_admin=True,
+            is_active=True,
         )
 
     def auth_headers(self, email="admin@example.com", password="password123"):
