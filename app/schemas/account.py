@@ -36,6 +36,6 @@ class EmailAddress(EmailAddressBase):
     primary: bool
     verified: bool
     verified_on: datetime = None
-    
+
     class Config:
         orm_mode = True

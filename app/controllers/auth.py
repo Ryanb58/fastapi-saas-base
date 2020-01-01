@@ -23,13 +23,15 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
+
 def authenticate_user(db_session: Session, username: str, plaintext_password: str):
     account_obj = get_account_by_email(db_session, email=username)
     if not account_obj:
         return False
 
     password_obj = (
-        db_session.query(Password).filter_by(account_id=account_obj.id)
+        db_session.query(Password)
+        .filter_by(account_id=account_obj.id)
         .order_by(Password.created_on.desc())
         .first()
     )

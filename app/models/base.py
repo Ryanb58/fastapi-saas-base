@@ -10,10 +10,5 @@ class BaseModel(Base):
 
     __abstract__ = True
 
-    created_on = Column(
-        DateTime, nullable=False, default=datetime.datetime.utcnow
-    )
-    updated_on = Column(
-        DateTime, nullable=True, onupdate=datetime.datetime.utcnow
-    )
-    
+    created_on = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_on = Column(DateTime, nullable=True, onupdate=datetime.datetime.utcnow)

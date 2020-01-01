@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
-from app.schemas import account as schemas  
+from app.schemas import account as schemas
 from app.controllers.account import get_account_by_email
 from app.controllers.account import get_account
 from app.controllers.account import get_accounts
@@ -13,8 +13,13 @@ from app.dependencies.auth import get_current_account
 
 router = APIRouter()
 
+
 @router.post("/", response_model=schemas.Account)
-def create_one(account: schemas.AccountCreate, db_session: Session = Depends(get_db), current_user: schemas.Account = Depends(get_current_account)):
+def create_one(
+    account: schemas.AccountCreate,
+    db_session: Session = Depends(get_db),
+    current_user: schemas.Account = Depends(get_current_account),
+):
     db_account = get_account_by_email(db_session, email=account.email)
     if db_account:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -29,7 +34,7 @@ def create_one(account: schemas.AccountCreate, db_session: Session = Depends(get
         account.last_name,
         account.email,
         account.password,
-        account.is_system_admin
+        account.is_system_admin,
     )
 
 
@@ -37,6 +42,7 @@ def create_one(account: schemas.AccountCreate, db_session: Session = Depends(get
 def read_many(skip: int = 0, limit: int = 100, db_session: Session = Depends(get_db)):
     accounts = get_accounts(db_session, skip=skip, limit=limit)
     return accounts
+
 
 @router.get("/me", response_model=schemas.Account)
 async def read_me(current_user: schemas.Account = Depends(get_current_account)):

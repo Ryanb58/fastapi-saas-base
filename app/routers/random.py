@@ -1,23 +1,22 @@
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
 from app.dependencies.tenant import get_tenant
-from app.schemas import account as schemas  
+from app.schemas import account as schemas
 from app.dependencies.auth import get_current_account
 from app.models.tenant import Tenant
 
 
 router = APIRouter()
 
+
 @router.get("/random")
-def random(tenant_obj: Tenant = Depends(get_tenant), db_session: Session = Depends(get_db)):
+def random(
+    tenant_obj: Tenant = Depends(get_tenant), db_session: Session = Depends(get_db)
+):
     if not tenant_obj:
-        tenant_obj = Tenant(
-            name="Ten 1",
-            slug="ten-1",
-        )
+        tenant_obj = Tenant(name="Ten 1", slug="ten-1",)
         db_session.add(tenant_obj)
         db_session.commit()
     return tenant_obj

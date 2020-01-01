@@ -6,15 +6,24 @@ from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_201_CREATED
 
 from app.dependencies import get_db
-from app.controllers.auth import ACCESS_TOKEN_EXPIRE_MINUTES, Token, authenticate_user, create_access_token
+from app.controllers.auth import (
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    Token,
+    authenticate_user,
+    create_access_token,
+)
 from app.dependencies.auth import get_current_account
 from app.schemas.tenant import TenantAccountCreate
 from app.controllers.tenant import create_tenant_and_account
+
 router = APIRouter()
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db_session: Session = Depends(get_db)):
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db_session: Session = Depends(get_db),
+):
     account = authenticate_user(db_session, form_data.username, form_data.password)
     if not account:
         raise HTTPException(
@@ -27,10 +36,12 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": account.id}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-    
+
 
 @router.post("/register", status_code=HTTP_201_CREATED)
-def register(tenant_account: TenantAccountCreate, db_session: Session = Depends(get_db)):
+def register(
+    tenant_account: TenantAccountCreate, db_session: Session = Depends(get_db)
+):
     tenant_obj = create_tenant_and_account(
         db_session,
         tenant_account.name,
@@ -38,7 +49,7 @@ def register(tenant_account: TenantAccountCreate, db_session: Session = Depends(
         tenant_account.first_name,
         tenant_account.last_name,
         tenant_account.email,
-        tenant_account.password
+        tenant_account.password,
     )
     if not tenant_obj:
         raise HTTPException(
@@ -46,4 +57,3 @@ def register(tenant_account: TenantAccountCreate, db_session: Session = Depends(
             detail="Error creating new account/tenant.",
         )
     return {"msg": "Please check your email."}
-    

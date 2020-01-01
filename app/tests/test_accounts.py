@@ -2,7 +2,6 @@ from app.tests.base import TestBase
 
 
 class AccountsTestCase(TestBase):
-
     def test_unauth_list(self):
         resp = self.client.get("/accounts")
         assert resp.status_code == 401
@@ -12,8 +11,8 @@ class AccountsTestCase(TestBase):
         resp = self.client.get("/accounts", headers=self.auth_headers())
         assert resp.status_code == 200
 
-class AccountEmailAddressTestCase(TestBase):
 
+class AccountEmailAddressTestCase(TestBase):
     def test_list_email_addresses(self):
         self.create_system_admin()
         resp = self.client.get("/email_addresses", headers=self.auth_headers())
@@ -23,12 +22,10 @@ class AccountEmailAddressTestCase(TestBase):
     def test_add_email(self):
         admin = self.create_system_admin()
         resp = self.client.post(
-            "/email_addresses/", 
-            json={
-                "email": "admin2@gmail.com",
-                "account_id": admin.id
-            },
-            headers=self.auth_headers())
+            "/email_addresses/",
+            json={"email": "admin2@gmail.com", "account_id": admin.id},
+            headers=self.auth_headers(),
+        )
         assert resp.status_code == 201
 
         resp = self.client.get("/email_addresses", headers=self.auth_headers())

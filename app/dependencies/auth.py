@@ -9,7 +9,10 @@ from app.dependencies import get_db
 from app.controllers.auth import oauth2_scheme, SECRET_KEY, ALGORITHM, get_account
 from app.schemas.auth import TokenData
 
-async def get_current_account(db_session: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+
+async def get_current_account(
+    db_session: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
+):
     credentials_exception = HTTPException(
         status_code=HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

@@ -1,5 +1,13 @@
 """Account based models."""
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, LargeBinary
+from sqlalchemy import (
+    Boolean,
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    DateTime,
+    LargeBinary,
+)
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from passlib.context import CryptContext
@@ -79,9 +87,7 @@ class Password(BaseModel):
         """If invalid raise ValidationError, else return True"""
 
         if len(plaintext_password) < 8:
-            raise Exception(
-                "Password must be at 8 or more characters long."
-            )
+            raise Exception("Password must be at 8 or more characters long.")
 
         return True
 

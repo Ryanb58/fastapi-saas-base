@@ -8,8 +8,10 @@ class TenantBase(BaseModel):
     name: str
     billing_email: str
 
+
 class TenantCreate(TenantBase):
     pass
+
 
 class Tenant(TenantBase):
     id: int
@@ -17,6 +19,7 @@ class Tenant(TenantBase):
 
     class Config:
         orm_mode = True
+
 
 class TenantAccountCreate(BaseModel):
     name: str

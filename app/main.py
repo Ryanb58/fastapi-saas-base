@@ -23,8 +23,8 @@ app = FastAPI(
     title="FastAPI Base",
     description="This is a base app to be used in the future for real SAAS apps and hackathons.",
     version="0.0.1",
-    docs_url="/docs", 
-    redoc_url=None
+    docs_url="/docs",
+    redoc_url=None,
 )
 
 # Startup Actions
@@ -41,16 +41,13 @@ async def create_admin():
         "password": "password123",
         "first_name": "Admin",
         "last_name": "Istrator",
-        "is_system_admin": True
+        "is_system_admin": True,
     }
-    account_obj = get_account_by_email(db_session, email=account_data['email'])
+    account_obj = get_account_by_email(db_session, email=account_data["email"])
     if account_obj:
         return
-    
-    create_account(
-        db_session,
-        **account_data
-    )
+
+    create_account(db_session, **account_data)
     db_session.close()
 
 
@@ -87,4 +84,3 @@ app.include_router(random.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
-    

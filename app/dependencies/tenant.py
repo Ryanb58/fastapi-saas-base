@@ -11,4 +11,3 @@ async def get_tenant(tenant_id: int = None, db_session: Session = Depends(get_db
     if not tenant_id:
         return None
     return db_session.query(Tenant).get(tenant_id)
-

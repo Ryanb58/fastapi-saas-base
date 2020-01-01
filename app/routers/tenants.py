@@ -8,6 +8,7 @@ import app.schemas as schemas
 from app.controllers.tenant import get_tenant_by_name
 from app.controllers.tenant import get_tenant
 from app.controllers.tenant import get_tenants
+
 # from app.controllers.tenant import create_tenant
 from app.dependencies.auth import get_current_account
 
@@ -26,6 +27,7 @@ router = APIRouter()
 def read_many(skip: int = 0, limit: int = 100, db_session: Session = Depends(get_db)):
     tenants = get_tenants(db_session, skip=skip, limit=limit)
     return tenants
+
 
 @router.get("/{id}", response_model=schemas.Tenant)
 def read_one(id: int, db_session: Session = Depends(get_db)):
