@@ -20,26 +20,32 @@ def get_account_by_email(db_session: Session, email: str):
 def get_accounts(db_session: Session, skip: int = 0, limit: int = 100):
     return db_session.query(Account).offset(skip).limit(limit).all()
 
-def create_account(db_session: Session, account: schemas.AccountCreate):
+def create_account(
+    db_session: Session,
+    first_name: str,
+    last_name: str,
+    email: str,
+    password: str,
+    is_system_admin: bool = False):
     """Create an user account."""
     account_obj = Account(
-        first_name=account.first_name,
-        last_name=account.last_name,
-        is_system_admin=account.is_system_admin
+        first_name=first_name,
+        last_name=last_name,
+        is_system_admin=is_system_admin
     )
     db_session.add(account_obj)
     db_session.flush()
 
     email_obj = EmailAddress(
         account_id=account_obj.id,
-        email=account.email,
+        email=email,
         primary=True,
         verified=False
     )
 
     password_obj = Password(
         account_id=account_obj.id,
-        password=account.password
+        password=password
     )
 
     db_session.add(email_obj)

@@ -23,7 +23,14 @@ def create_one(account: schemas.AccountCreate, db_session: Session = Depends(get
     if not current_user.is_system_admin:
         account.is_system_admin = False
 
-    return create_account(db_session, account=account)
+    return create_account(
+        db_session,
+        account.first_name,
+        account.last_name,
+        account.email,
+        account.password,
+        account.is_system_admin
+    )
 
 
 @router.get("/", response_model=List[schemas.Account])

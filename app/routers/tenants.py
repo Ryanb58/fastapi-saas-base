@@ -8,18 +8,18 @@ import app.schemas as schemas
 from app.controllers.tenant import get_tenant_by_name
 from app.controllers.tenant import get_tenant
 from app.controllers.tenant import get_tenants
-from app.controllers.tenant import create_tenant
+# from app.controllers.tenant import create_tenant
 from app.dependencies.auth import get_current_account
 
 router = APIRouter()
 
-@router.post("/", response_model=schemas.Tenant)
-def create_one(tenant: schemas.TenantCreate, db_session: Session = Depends(get_db), current_user: schemas.Account = Depends(get_current_account)):
-    db_tenant = get_tenant_by_name(db_session, name=tenant.name)
-    if db_tenant:
-        raise HTTPException(status_code=400, detail="Name already registered")
+# @router.post("/", response_model=schemas.Tenant)
+# def create_one(tenant: schemas.TenantCreate, db_session: Session = Depends(get_db), current_user: schemas.Account = Depends(get_current_account)):
+#     db_tenant = get_tenant_by_name(db_session, name=tenant.name)
+#     if db_tenant:
+#         raise HTTPException(status_code=400, detail="Name already registered")
 
-    return create_tenant(db_session, tenant=tenant)
+#     return create_tenant(db_session, tenant=tenant)
 
 
 @router.get("/", response_model=List[schemas.Tenant])

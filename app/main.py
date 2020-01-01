@@ -34,7 +34,6 @@ async def create_admin():
     from app.database import DBSession
     from app.controllers.account import create_account
     from app.controllers.account import get_account_by_email
-    from app.schemas.account import AccountCreate
 
     db_session = DBSession()
     account_data = {
@@ -50,7 +49,7 @@ async def create_admin():
     
     create_account(
         db_session,
-        AccountCreate(**account_data)
+        **account_data
     )
     db_session.close()
 

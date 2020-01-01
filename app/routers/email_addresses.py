@@ -11,6 +11,7 @@ from app.dependencies.auth import get_current_account
 
 router = APIRouter()
 
+
 @router.post("/", response_model=schemas.EmailAddress, status_code=HTTP_201_CREATED)
 def create_one(
     email: schemas.EmailAddressCreate, 

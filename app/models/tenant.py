@@ -14,4 +14,5 @@ class Tenant(BaseModel):
     name = Column(String(128))
     slug = Column(String(128), unique=True) # Slug of the name for the URL.
 
-    stripe_sub_id = Column(String(128), unique=True, nullable=True)
+    stripe_customer_id = Column(String(128), unique=True, nullable=True)
+    stripe_subscription_id = Column(String(128), unique=True, nullable=True)

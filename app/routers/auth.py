@@ -3,12 +3,13 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_201_CREATED
 
 from app.dependencies import get_db
 from app.controllers.auth import ACCESS_TOKEN_EXPIRE_MINUTES, Token, authenticate_user, create_access_token
 from app.dependencies.auth import get_current_account
-from app.schemas.account import Account
+from app.schemas.tenant import TenantAccountCreate
+from app.controllers.tenant import create_tenant_and_account
 router = APIRouter()
 
 
@@ -26,4 +27,23 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": account.id}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+    
+
+@router.post("/register", status_code=HTTP_201_CREATED)
+def register(tenant_account: TenantAccountCreate, db_session: Session = Depends(get_db)):
+    tenant_obj = create_tenant_and_account(
+        db_session,
+        tenant_account.name,
+        tenant_account.slug,
+        tenant_account.first_name,
+        tenant_account.last_name,
+        tenant_account.email,
+        tenant_account.password
+    )
+    if not tenant_obj:
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED,
+            detail="Error creating new account/tenant.",
+        )
+    return {"msg": "Please check your email."}
     
