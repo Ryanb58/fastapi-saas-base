@@ -27,14 +27,14 @@ def create_tenant_and_account(
 ):
     """Create a tenant and an account."""
 
-    tenant_obj = Tenant(name=name, slug=slug)
+    tenant_obj = Tenant(name=name, slug=slug, billing_email=email)
     db_session.add(tenant_obj)
     db_session.flush()
 
     # New tenant = New Customer in stripe.
     customer_resp = stripe.Customer.create(
         email=email,
-        description="Customer for {}".format(email),
+        description="Customer for {}<{}>".format(name, email),
         name=name,
         metadata={"tenant_id": tenant_obj.id},
     )

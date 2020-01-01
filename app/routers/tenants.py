@@ -29,7 +29,7 @@ def read_many(skip: int = 0, limit: int = 100, db_session: Session = Depends(get
     return tenants
 
 
-@router.get("/{id}", response_model=schemas.Tenant)
+@router.get("/{id}", response_model=schemas.TenantDetails)
 def read_one(id: int, db_session: Session = Depends(get_db)):
     db_tenant = get_tenant(db_session, id=id)
     if db_tenant is None:

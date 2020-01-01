@@ -6,12 +6,10 @@ from pydantic import BaseModel
 
 class TenantBase(BaseModel):
     name: str
-    billing_email: str
-
 
 class TenantCreate(TenantBase):
-    pass
-
+    billing_email: str
+    
 
 class Tenant(TenantBase):
     id: int
@@ -20,6 +18,8 @@ class Tenant(TenantBase):
     class Config:
         orm_mode = True
 
+class TenantDetails(Tenant):
+    billing_email: str
 
 class TenantAccountCreate(BaseModel):
     name: str

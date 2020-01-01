@@ -56,7 +56,7 @@ class EmailAddress(BaseModel):
         backref=backref("email_addresses", passive_deletes=True, lazy="dynamic"),
     )
 
-    email = Column(String(120), unique=True, nullable=False)
+    email = Column(String(256), unique=True, nullable=False)
     primary = Column(Boolean(), nullable=True)
     verified = Column(Boolean(), nullable=True)
     verified_on = Column(DateTime, nullable=True)
