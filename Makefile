@@ -19,3 +19,11 @@ run-tests: ## Run tests (must run in container)
 .PHONY: shell
 shell: ## Run container.
 	docker-compose run --service-ports app /bin/bash
+
+.PHONY: fmt
+fmt: ## Format files.
+	docker-compose run --service-ports app make run-fmt
+
+.PHONY: run-fmt
+run-fmt: ## Format files.
+	black app/
