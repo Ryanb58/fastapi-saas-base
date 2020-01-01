@@ -22,7 +22,7 @@ shell: ## Run container.
 
 .PHONY: fmt
 fmt: ## Format files.
-	docker-compose run --service-ports app make run-fmt
+	docker-compose run app make run-fmt
 
 .PHONY: run-fmt
 run-fmt: ## Format files.
