@@ -35,6 +35,7 @@ class TenantAccount(BaseModel):
     """
     Through table for M2M relationship between a Tenant and Accounts.
     """
+
     __tablename__ = "tenant_account"
     id = Column(Integer, primary_key=True, index=True)
 
@@ -42,14 +43,18 @@ class TenantAccount(BaseModel):
         Integer, ForeignKey("tenants.id", ondelete="CASCADE"), nullable=False
     )
     tenant = relationship(
-        "Tenant", backref=backref("accounts", passive_deletes=True, lazy="dynamic"), lazy=True
+        "Tenant",
+        backref=backref("accounts", passive_deletes=True, lazy="dynamic"),
+        lazy=True,
     )
 
     account_id = Column(
         Integer, ForeignKey("accounts.id", ondelete="CASCADE"), nullable=True
     )
     account = relationship(
-        "Account", backref=backref("tenants", passive_deletes=True, lazy="dynamic"), lazy=True
+        "Account",
+        backref=backref("tenants", passive_deletes=True, lazy="dynamic"),
+        lazy=True,
     )
 
     def __repr__(self):

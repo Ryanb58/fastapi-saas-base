@@ -19,10 +19,7 @@ def get_tenants(db_session: Session, skip: int = 0, limit: int = 100):
 def add_account_to_tenant(db_session: Session, account_id, tenant_id):
     """Create relationship between tenant and account."""
 
-    tenant_account_obj = TenantAccount(
-        tenant_id = tenant_id,
-        account_id = account_id
-    )
+    tenant_account_obj = TenantAccount(tenant_id=tenant_id, account_id=account_id)
 
     db_session.add(tenant_account_obj)
     db_session.commit()
