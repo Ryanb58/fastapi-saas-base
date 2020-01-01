@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends
 
 from app.schemas import tenant as schemas
-from app.models.tenant import Tenant
+from app.models.tenant import Tenant, TenantAccount
 
 from app.controllers.billing import stripe
 from app.controllers.account import create_account
@@ -14,6 +14,19 @@ def get_tenant(db_session: Session, id: int):
 
 def get_tenants(db_session: Session, skip: int = 0, limit: int = 100):
     return db_session.query(Tenant).offset(skip).limit(limit).all()
+
+
+def add_account_to_tenant(db_session: Session, account_id, tenant_id):
+    """Create relationship between tenant and account."""
+
+    tenant_account_obj = TenantAccount(
+        tenant_id = tenant_id,
+        account_id = account_id
+    )
+
+    db_session.add(tenant_account_obj)
+    db_session.commit()
+    return tenant_account_obj
 
 
 def create_tenant_and_account(
@@ -48,6 +61,7 @@ def create_tenant_and_account(
     account_obj = create_account(db_session, first_name, last_name, email, password)
 
     # TODO: Add relationship between account to tenant.
+    add_account_to_tenant(db_session, account_obj.id, tenant_obj.id)
 
     db_session.refresh(tenant_obj)
 

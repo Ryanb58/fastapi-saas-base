@@ -29,6 +29,7 @@ class RegisterTestCase(TestBase):
         assert response.status_code == 201
         assert self.db_session.query(Account).count() == 1
         assert self.db_session.query(Tenant).count() == 1
+        assert self.db_session.query(Tenant).first().accounts.count() == 1
 
     # def test_duplicate(self):
     #     payload = {

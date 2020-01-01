@@ -53,6 +53,7 @@ python-multipart==0.0.5
 PyYAML==5.2
 regex==2019.12.20
 requests==2.22.0
+responses==0.10.9
 Rx==1.6.1
 six==1.13.0
 slugify==0.0.1
