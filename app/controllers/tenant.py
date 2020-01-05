@@ -6,7 +6,7 @@ from app.models.tenant import Tenant, TenantAccount
 
 from app.controllers.billing import stripe
 from app.controllers.account import create_account
-
+from app.utils.email import send_email
 
 def get_tenant(db_session: Session, id: int):
     return db_session.query(Tenant).filter(Tenant.id == id).first()
@@ -57,8 +57,16 @@ def create_tenant_and_account(
     # Create account
     account_obj = create_account(db_session, first_name, last_name, email, password)
 
-    # TODO: Add relationship between account to tenant.
+    # Add relationship between account to tenant.
     add_account_to_tenant(db_session, account_obj.id, tenant_obj.id)
+
+    # Send registration email.
+    send_email()
+    #     email,
+    #     subject="Welcome!",
+    #     body="Testing 123"
+    # )
+
 
     db_session.refresh(tenant_obj)
 
