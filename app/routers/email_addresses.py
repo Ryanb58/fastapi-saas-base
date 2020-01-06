@@ -29,9 +29,9 @@ def create_one(
         raise HTTPException(status_code=400, detail="Email already registered")
 
     # Set the account_id from the current logged in user.
-    email.account_id = current_user.id
+    account_id = current_user.id
 
-    return create_email_address(db_session, email)
+    return create_email_address(db_session, email.email, account_id)
 
 
 @router.get("/", response_model=List[schemas.EmailAddress], status_code=HTTP_200_OK)

@@ -9,9 +9,7 @@ from app.config import config
 
 
 def send_email(
-    to_email: str,
-    subject: str,
-    body: str,
+    to_email: str, subject: str, body: str,
 ):
     """Send an email."""
     smtp_host = config("SMTP_HOST", cast=str, default=False)
@@ -22,12 +20,12 @@ def send_email(
     msg = MIMEMultipart("alternative")
     # me == the sender's email address
     # you == the recipient's email address
-    msg['Subject'] = subject
-    msg['From'] = 'noreply@example.com'
-    msg['To'] = to_email
+    msg["Subject"] = subject
+    msg["From"] = "noreply@example.com"
+    msg["To"] = to_email
 
     # Get the contents of the template.
-    with open('app/templates/email/empty.html', 'r') as template:
+    with open("app/templates/email/empty.html", "r") as template:
         # Parse
         template = Template(template.read())
 

@@ -35,8 +35,7 @@ async def login_for_access_token(
     # Account must be active.
     if not account_obj.is_active:
         raise HTTPException(
-            status_code=HTTP_409_CONFLICT,
-            detail="Account disabled",
+            status_code=HTTP_409_CONFLICT, detail="Account disabled",
         )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
