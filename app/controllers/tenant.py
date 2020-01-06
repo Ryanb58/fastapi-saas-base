@@ -61,12 +61,11 @@ def create_tenant_and_account(
     add_account_to_tenant(db_session, account_obj.id, tenant_obj.id)
 
     # Send registration email.
-    send_email()
-    #     email,
-    #     subject="Welcome!",
-    #     body="Testing 123"
-    # )
-
+    send_email(
+        to_email=email,
+        subject="Registration",
+        body="Weclome to the website. Please use the following link to continue your registration."
+    )
 
     db_session.refresh(tenant_obj)
 

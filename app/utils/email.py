@@ -3,36 +3,41 @@ from email.mime.text import MIMEText
 from typing import Union, Optional, List
 import smtplib
 
+from jinja2 import Template
+
 from app.config import config
 
 
-def send_email():
-            # receiver_email: str,
-            #    cc: Optional[List[str]],
-            #    bcc: Optional[List[str]],
-            #    sender_email: str = "noreply@example.com",
-            #    subject='',
-            #    body: Optional[List[str]] = None
-            #    ):
+def send_email(
+    to_email: str,
+    subject: str,
+    body: str,
+):
     """Send an email."""
     smtp_host = config("SMTP_HOST", cast=str, default=False)
     smtp_port = config("SMTP_PORT", cast=str, default=False)
     smtp_username = config("SMTP_USERNAME", cast=str, default=False)
     smtp_password = config("SMTP_PASSWORD", cast=str, default=False)
 
-    sender = 'from@fromdomain.com'
-    receivers = ['to@todomain.com']
+    msg = MIMEMultipart("alternative")
+    # me == the sender's email address
+    # you == the recipient's email address
+    msg['Subject'] = subject
+    msg['From'] = 'noreply@example.com'
+    msg['To'] = to_email
 
-    message = """From: From Person <from@fromdomain.com>
-    To: To Person <to@todomain.com>
-    Subject: SMTP e-mail test
+    # Get the contents of the template.
+    with open('app/templates/email/empty.html', 'r') as template:
+        # Parse
+        template = Template(template.read())
 
-    This is a test e-mail message.
-    """
+    # inject the body.
+    text = body
+    html = template.render(body=body)
 
-    try:
-        smtpObj = smtplib.SMTP(smtp_host)
-        smtpObj.sendmail(sender, receivers, message)         
-        print("Successfully sent email")
-    except SMTPException:
-        print("Error: unable to send email")
+    msg.attach(MIMEText(text, "plain"))
+    msg.attach(MIMEText(html, "html"))
+
+    smtpObj = smtplib.SMTP(smtp_host)
+    smtpObj.send_message(msg)
+    print("Successfully sent email")
