@@ -70,7 +70,6 @@ app.include_router(
     email_addresses.router,
     prefix="/email_addresses",
     tags=["email_addresses"],
-    dependencies=[Depends(get_current_account)],
     responses={404: {"description": "Not found"}},
 )
 app.include_router(

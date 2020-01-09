@@ -1,9 +1,9 @@
 import responses
 
 from app.tests.base import TestBase
-from app.models.account import Account
+from app.models.account import Account, EmailAddress
 from app.models.tenant import Tenant
-
+from app.controllers.account import create_email_verification_token, verify_email_address
 
 class RegisterTestCase(TestBase):
     @responses.activate
@@ -35,6 +35,19 @@ class RegisterTestCase(TestBase):
         payload = {"username": "andy.bernard@example.com", "password": "password123"}
         response = self.client.post("/auth/token", data=payload)
         assert response.status_code == 409
+
+        #TODO: Get the signed jwt and try to validate the account.
+        email_obj = self.db_session.query(EmailAddress).filter(
+            EmailAddress.email == "andy.bernard@example.com"
+        ).first()
+        token = create_email_verification_token(email_obj)
+        response = self.client.post("/email_addresses/verify?token={}".format(token), data=payload)
+        assert response.status_code == 200
+
+        payload = {"username": "andy.bernard@example.com", "password": "password123"}
+        response = self.client.post("/auth/token", data=payload)
+        assert response.status_code == 200
+
 
     # def test_duplicate(self):
     #     payload = {

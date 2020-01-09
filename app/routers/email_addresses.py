@@ -10,11 +10,19 @@ from app.controllers.account import (
     get_email_addresses,
     create_email_address,
     get_account_by_email,
+    verify_email_address
 )
 from app.dependencies.auth import get_current_account
 
 router = APIRouter()
 
+@router.post("/verify", status_code=HTTP_200_OK)
+def verify_email(
+    token: str = "",
+    db_session: Session = Depends(get_db)
+):
+    verify_email_address(db_session, token)
+    return
 
 @router.post("/", response_model=schemas.EmailAddress, status_code=HTTP_201_CREATED)
 def create_one(
@@ -44,3 +52,4 @@ def read_many(
     return get_email_addresses(
         db_session, account_id=current_user.id, skip=skip, limit=limit
     )
+
