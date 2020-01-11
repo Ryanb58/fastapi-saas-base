@@ -1,4 +1,5 @@
 import responses
+from unittest.mock import patch
 
 from app.tests.base import TestBase
 from app.models.account import Account, EmailAddress
@@ -6,8 +7,10 @@ from app.models.tenant import Tenant
 from app.controllers.account import create_email_verification_token, verify_email_address
 
 class RegisterTestCase(TestBase):
+
+    @patch('app.controllers.account.send_email')
     @responses.activate
-    def test_success(self):
+    def test_success(self, mock_send_email):
         # Mock out request to stripe.
         responses.add(
             responses.POST,

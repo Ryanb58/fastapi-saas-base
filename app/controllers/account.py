@@ -18,7 +18,7 @@ from app.utils.email import send_email
 SECRET_KEY = config("SECRET_KEY", cast=str, default=False)
 ALGORITHM = "HS256"
 EMAIL_TOKEN_EXPIRE_MINUTES = 30
-FRONTEND_URL = config("FRONTEND_URL", cast=str)
+FRONTEND_URL = config("FRONTEND_URL", cast=str, default="")
 
 
 def get_account(db_session: Session, id: int):
