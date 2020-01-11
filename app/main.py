@@ -11,8 +11,8 @@ from app.database import engine, Base
 from app.routers import accounts
 from app.routers import auth
 from app.routers import email_addresses
+from app.routers import members
 from app.routers import tenants
-
 
 # Create tables in database.
 Base.metadata.create_all(bind=engine)
@@ -69,6 +69,13 @@ app.include_router(
     email_addresses.router,
     prefix="/email_addresses",
     tags=["email_addresses"],
+    responses={404: {"description": "Not found"}},
+)
+app.include_router(
+    members.router,
+    prefix="/members",
+    tags=["members"],
+    dependencies=[Depends(get_current_account)],
     responses={404: {"description": "Not found"}},
 )
 app.include_router(

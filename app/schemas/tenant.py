@@ -31,3 +31,12 @@ class TenantAccountCreate(BaseModel):
     last_name: str
     email: str
     password: str
+
+
+class TenantAccount(BaseModel):
+    id: int
+    account_id: int
+    tenant_id: int
+    
+    class Config:
+        orm_mode = True
