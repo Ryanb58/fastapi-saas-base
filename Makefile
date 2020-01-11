@@ -14,7 +14,7 @@ test: ## Run unittests.
 
 .PHONY: run-tests
 run-tests: ## Run tests (must run in container)
-	pytest -s --cov=app --no-cov-on-fail --cov-fail-under=93
+	pytest -s --cov=app --no-cov-on-fail --cov-fail-under=80
 
 .PHONY: shell
 shell: ## Run container.
