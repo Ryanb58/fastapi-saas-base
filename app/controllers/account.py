@@ -72,9 +72,7 @@ def create_account(
     if send_registration_email:
         token = create_email_verification_token(email_obj)
         registration_link = "{}/{}/verify?token={}".format(
-            FRONTEND_URL,
-            email_obj.id, 
-            token
+            FRONTEND_URL, email_obj.id, token
         )
         send_email(
             to_email=email,
@@ -83,8 +81,7 @@ def create_account(
             <p />Please use the following link to continue your registration. 
             <p /><a href="{}">{}</a>
             """.format(
-                registration_link,
-                registration_link
+                registration_link, registration_link
             ),
         )
 
@@ -107,7 +104,12 @@ def get_email_addresses(
     )
 
 
-def create_email_address(db_session: Session, email: str, account_id: int, send_verification_email: bool = True):
+def create_email_address(
+    db_session: Session,
+    email: str,
+    account_id: int,
+    send_verification_email: bool = True,
+):
     """Add an email_address to a users account."""
     email_obj = EmailAddress(
         account_id=account_id, email=email, primary=False, verified=False
@@ -121,9 +123,7 @@ def create_email_address(db_session: Session, email: str, account_id: int, send_
     if send_verification_email:
         token = create_email_verification_token(email_obj)
         verification_link = "{}/{}/verify?token={}".format(
-            FRONTEND_URL,
-            email_obj.id, 
-            token
+            FRONTEND_URL, email_obj.id, token
         )
         send_email(
             to_email=email,
@@ -132,8 +132,7 @@ def create_email_address(db_session: Session, email: str, account_id: int, send_
             <p />Please use the following link to verify your email address. 
             <p /><a href="{}">{}</a>
             """.format(
-                verification_link,
-                verification_link
+                verification_link, verification_link
             ),
         )
 
@@ -154,6 +153,7 @@ def create_email_verification_token(email_obj):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt.decode("utf-8")
 
+
 def get_email_id_from_token(token):
     """Mark an email as verified if token is legit."""
     try:
@@ -164,12 +164,13 @@ def get_email_id_from_token(token):
     except Exception:
         return False
 
-    return token.get('id')
+    return token.get("id")
+
 
 def mark_email_as_verified(db_session: Session, email_id: int):
     """Mark an email id as verified and account as active."""
     email_obj = db_session.query(EmailAddress).get(email_id)
-    
+
     # Mark email as verified.
     email_obj.verified = True
     email_obj.verified_on = datetime.now()
@@ -180,6 +181,7 @@ def mark_email_as_verified(db_session: Session, email_id: int):
     db_session.add(account_obj)
     db_session.add(email_obj)
     db_session.commit()
+
 
 def verify_email_address(db_session: Session, token: str):
     email_id = get_email_id_from_token(token)

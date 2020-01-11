@@ -34,7 +34,7 @@ class TestBase(TestCase):
             password="password123",
             is_system_admin=True,
             is_active=True,
-            send_registration_email=False
+            send_registration_email=False,
         )
 
     def auth_headers(self, email="admin@example.com", password="password123"):

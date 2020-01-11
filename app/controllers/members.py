@@ -12,6 +12,10 @@ from app.controllers.account import create_account
 
 
 def get_members(db_session: Session, tenant_id: int, skip: int = 0, limit: int = 100):
-    return db_session.query(TenantAccount).filter(
-        TenantAccount.tenant_id == tenant_id
-    ).offset(skip).limit(limit).all()
+    return (
+        db_session.query(TenantAccount)
+        .filter(TenantAccount.tenant_id == tenant_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )

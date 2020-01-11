@@ -4,11 +4,14 @@ from unittest.mock import patch
 from app.tests.base import TestBase
 from app.models.account import Account, EmailAddress
 from app.models.tenant import Tenant
-from app.controllers.account import create_email_verification_token, verify_email_address
+from app.controllers.account import (
+    create_email_verification_token,
+    verify_email_address,
+)
+
 
 class RegisterTestCase(TestBase):
-
-    @patch('app.controllers.account.send_email')
+    @patch("app.controllers.account.send_email")
     @responses.activate
     def test_success(self, mock_send_email):
         # Mock out request to stripe.
@@ -40,11 +43,15 @@ class RegisterTestCase(TestBase):
         assert response.status_code == 409
 
         # Get the signed jwt and try to validate the account.
-        email_obj = self.db_session.query(EmailAddress).filter(
-            EmailAddress.email == "andy.bernard@example.com"
-        ).first()
+        email_obj = (
+            self.db_session.query(EmailAddress)
+            .filter(EmailAddress.email == "andy.bernard@example.com")
+            .first()
+        )
         token = create_email_verification_token(email_obj)
-        response = self.client.post("/email_addresses/verify?token={}".format(token), data=payload)
+        response = self.client.post(
+            "/email_addresses/verify?token={}".format(token), data=payload
+        )
         assert response.status_code == 200
 
         payload = {"username": "andy.bernard@example.com", "password": "password123"}

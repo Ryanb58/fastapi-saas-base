@@ -37,6 +37,6 @@ class TenantAccount(BaseModel):
     id: int
     account_id: int
     tenant_id: int
-    
+
     class Config:
         orm_mode = True

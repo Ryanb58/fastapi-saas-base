@@ -6,9 +6,9 @@ from app.models.account import Account
 from app.models.account import EmailAddress
 from app.controllers.tenant import create_tenant_and_account
 
-class MembersTestCase(TestBase):
 
-    @patch('app.controllers.account.send_email')
+class MembersTestCase(TestBase):
+    @patch("app.controllers.account.send_email")
     @responses.activate
     def test_get(self, mock_send_email):
         # Mock out request to stripe.
@@ -27,10 +27,7 @@ class MembersTestCase(TestBase):
             "name": "Dunder Mifflin Scranton",
             "slug": "dunder-mifflin-scranton",
         }
-        tenant_obj = create_tenant_and_account(
-            self.db_session,
-            **payload
-        )
+        tenant_obj = create_tenant_and_account(self.db_session, **payload)
         account_obj = tenant_obj.accounts.first().account
         account_obj.is_active = True
         email_obj = account_obj.email_addresses.first()
@@ -40,10 +37,8 @@ class MembersTestCase(TestBase):
         self.db_session.commit()
         headers = self.auth_headers(email="andy.bernard@example.com")
         response = self.client.get(
-            "/members?tenant_id={}".format(tenant_obj.id),
-            headers=headers
+            "/members?tenant_id={}".format(tenant_obj.id), headers=headers
         )
 
         assert response.status_code == 200
         assert len(response.json()) == 1
-
