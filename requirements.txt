@@ -11,10 +11,11 @@ certifi==2019.11.28
 cffi==1.13.2
 chardet==3.0.4
 Click==7.0
+coverage==5.0.2
 decorator==4.4.1
 dnspython==1.16.0
 email-validator==1.0.5
-fastapi==0.46.0
+fastapi==0.45.0
 graphene==2.1.8
 graphql-core==2.2.1
 graphql-relay==2.0.1
@@ -49,6 +50,7 @@ Pygments==2.5.2
 PyJWT==1.7.1
 pyparsing==2.4.5
 pytest==5.3.2
+pytest-cov==2.8.1
 python-multipart==0.0.5
 PyYAML==5.2
 regex==2019.12.20
