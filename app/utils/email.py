@@ -38,4 +38,3 @@ def send_email(
 
     smtpObj = smtplib.SMTP(smtp_host)
     smtpObj.send_message(msg)
-    print("Successfully sent email")

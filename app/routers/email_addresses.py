@@ -24,13 +24,12 @@ def verify_email(
     verify_email_address(db_session, token)
     return
 
-@router.post("/", response_model=schemas.EmailAddress, status_code=HTTP_201_CREATED)
+@router.post("", response_model=schemas.EmailAddress, status_code=HTTP_201_CREATED)
 def create_one(
     email: schemas.EmailAddressCreate,
     db_session: Session = Depends(get_db),
     current_user: schemas.Account = Depends(get_current_account),
 ):
-
     # Can not add an email address that is already in use.
     db_email = get_account_by_email(db_session, email=email.email)
     if db_email:
@@ -42,7 +41,7 @@ def create_one(
     return create_email_address(db_session, email.email, account_id)
 
 
-@router.get("/", response_model=List[schemas.EmailAddress], status_code=HTTP_200_OK)
+@router.get("", response_model=List[schemas.EmailAddress], status_code=HTTP_200_OK)
 def read_many(
     skip: int = 0,
     limit: int = 100,

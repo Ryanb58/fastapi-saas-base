@@ -107,7 +107,7 @@ def get_email_addresses(
     )
 
 
-def create_email_address(db_session: Session, email: str, account_id: int):
+def create_email_address(db_session: Session, email: str, account_id: int, send_verification_email: bool = True):
     """Add an email_address to a users account."""
     email_obj = EmailAddress(
         account_id=account_id, email=email, primary=False, verified=False
@@ -116,6 +116,26 @@ def create_email_address(db_session: Session, email: str, account_id: int):
     db_session.add(email_obj)
     db_session.commit()
     db_session.refresh(email_obj)
+
+    # Send verification email.
+    if send_verification_email:
+        token = create_email_verification_token(email_obj)
+        verification_link = "{}/{}/verify?token={}".format(
+            FRONTEND_URL,
+            email_obj.id, 
+            token
+        )
+        send_email(
+            to_email=email,
+            subject="Verify your email!",
+            body="""Email Verification. 
+            <p />Please use the following link to verify your email address. 
+            <p /><a href="{}">{}</a>
+            """.format(
+                verification_link,
+                verification_link
+            ),
+        )
 
     return email_obj
 
