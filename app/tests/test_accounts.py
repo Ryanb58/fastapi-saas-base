@@ -22,7 +22,7 @@ class AccountEmailAddressTestCase(TestBase):
     def test_add_email(self):
         admin = self.create_system_admin()
         resp = self.client.post(
-            "/email_addresses/",
+            "/email_addresses",
             json={"email": "admin2@gmail.com", "account_id": admin.id},
             headers=self.auth_headers(),
         )
