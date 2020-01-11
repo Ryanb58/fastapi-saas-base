@@ -1,13 +1,19 @@
 Building a robust API base for a SAAS application.
 
-### Requirements:
-- JSON
-- JWT Authentication
-- Unittests
-- Multi Tenant
-- RBAC
-- Stripe integration
-- Audit logs
-- Feature Flags(Global/Tenant specific )
-- Ability to run long running jobs outside the request/response life cycle.
-- Admin interface to manage Users, Roles, Permissions, Activity.
+### Getting Started:
+
+Create a `.env` file in this projects root and fill out the following:
+
+```
+FRONTEND_URL=http://localhost
+SECRET_KEY=
+
+STRIPE_API_SECRET=
+STRIPE_DEFAULT_PRODUCT_ID=
+STRIPE_DEFAULT_PLAN_ID=
+
+SMTP_PORT=1025
+SMTP_HOST=mail
+SMTP_USERNAME=username
+SMTP_PASSWORD=password
+```

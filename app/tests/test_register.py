@@ -36,7 +36,7 @@ class RegisterTestCase(TestBase):
         response = self.client.post("/auth/token", data=payload)
         assert response.status_code == 409
 
-        #TODO: Get the signed jwt and try to validate the account.
+        # Get the signed jwt and try to validate the account.
         email_obj = self.db_session.query(EmailAddress).filter(
             EmailAddress.email == "andy.bernard@example.com"
         ).first()
@@ -47,15 +47,3 @@ class RegisterTestCase(TestBase):
         payload = {"username": "andy.bernard@example.com", "password": "password123"}
         response = self.client.post("/auth/token", data=payload)
         assert response.status_code == 200
-
-
-    # def test_duplicate(self):
-    #     payload = {
-    #         'first_name': 'Andy',
-    #         'last_name': 'Benard',
-    #         'username': 'andy.bernard@example.com',
-    #         'password': 'password123',
-    #         'tenant_name': 'Dunder Mifflin Scranton'
-    #     }
-    #     response = self.client.post("/auth/register", data=payload)
-    #     assert response.status_code == 401
