@@ -11,7 +11,6 @@ from app.database import engine, Base
 from app.routers import accounts
 from app.routers import auth
 from app.routers import email_addresses
-from app.routers import random
 from app.routers import tenants
 
 
@@ -80,7 +79,6 @@ app.include_router(
     responses={404: {"description": "Not found"}},
 )
 
-app.include_router(random.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
