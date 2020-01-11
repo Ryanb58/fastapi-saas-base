@@ -28,3 +28,8 @@ fmt: ## Format files.
 run-fmt: ## Format files.
 	black app/
 	
+.PHONY: build
+build: ## Build the docker container
+	git config core.hooksPath .githooks
+	docker-compose build
+	docker-compose down
