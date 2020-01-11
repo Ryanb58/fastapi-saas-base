@@ -157,7 +157,7 @@ def create_email_verification_token(email_obj):
 def get_email_id_from_token(token):
     """Mark an email as verified if token is legit."""
     try:
-        token = jwt.decode(token, SECRET_KEY, algorithm=ALGORITHM)
+        token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except jwt.ExpiredSignatureError:
         # Signature has expired
         return False
