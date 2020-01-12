@@ -34,6 +34,8 @@ def create_tenant_and_account(
     last_name: str,
     email: str,
     password: str,
+    is_active: bool = False,
+    is_verified: bool = False
 ):
     """Create a tenant and an account."""
 
@@ -55,7 +57,7 @@ def create_tenant_and_account(
     db_session.commit()
 
     # Create account
-    account_obj = create_account(db_session, first_name, last_name, email, password)
+    account_obj = create_account(db_session, first_name, last_name, email, password, is_active=is_active, is_verified=is_verified)
 
     # Add relationship between account to tenant.
     add_account_to_tenant(db_session, account_obj.id, tenant_obj.id)

@@ -47,6 +47,7 @@ def create_account(
     is_system_admin: bool = False,
     is_active: bool = False,
     send_registration_email: bool = True,
+    is_verified: bool = False
 ):
     """Create an user account."""
     account_obj = Account(
@@ -59,7 +60,7 @@ def create_account(
     db_session.flush()
 
     email_obj = EmailAddress(
-        account_id=account_obj.id, email=email, primary=True, verified=False
+        account_id=account_obj.id, email=email, primary=True, verified=is_verified
     )
 
     password_obj = Password(account_id=account_obj.id, password=password)

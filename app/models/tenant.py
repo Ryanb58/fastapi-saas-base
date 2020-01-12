@@ -57,6 +57,9 @@ class TenantAccount(BaseModel):
         lazy=True,
     )
 
+    # Use this field in case the user doesn't have an account yet.
+    email_address = Column(String, nullable=True)
+
     def __repr__(self):
         return "<TenantAccount {} - Tenant ID: {} - Account ID: {}>".format(
             self.id, self.tenant_id, self.account_id
