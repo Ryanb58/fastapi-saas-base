@@ -15,7 +15,6 @@ class TestBase(TestCase):
         Base.metadata.drop_all(self.connection)
         Base.metadata.create_all(self.connection)
 
-        # TODO: Create admin.
         self.client = TestClient(app)
 
     def tearDown(self):

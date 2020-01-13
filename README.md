@@ -5,7 +5,7 @@ Building a robust API base for a SAAS application.
 Create a `.env` file in this projects root and fill out the following:
 
 ```
-FRONTEND_URL=http://localhost
+FRONTEND_BASE_URL=http://localhost
 SECRET_KEY=
 
 STRIPE_API_SECRET=

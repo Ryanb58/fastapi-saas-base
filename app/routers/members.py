@@ -26,9 +26,15 @@ def read_many(
 
 
 @router.post("", response_model=schemas.MemberCreate, status_code=HTTP_201_CREATED)
-def add_one(member: schemas.MemberCreate, db_session: Session = Depends(get_db), current_user: AccountSchema = Depends(get_current_account)):
+def add_one(
+    member: schemas.MemberCreate,
+    db_session: Session = Depends(get_db),
+    current_user: AccountSchema = Depends(get_current_account),
+):
     # Make sure email isn't already added.
-    db_member = get_member_by_email(db_session, tenant_id=member.tenant_id, email=member.email)
+    db_member = get_member_by_email(
+        db_session, tenant_id=member.tenant_id, email=member.email
+    )
     if db_member:
         raise HTTPException(status_code=400, detail="Account has already been invited.")
 

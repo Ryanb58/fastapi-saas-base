@@ -5,18 +5,14 @@ import smtplib
 
 from jinja2 import Template
 
-from app.config import config
+from app.settings import TESTING
+from app.settings import SMTP_HOST
+from app.settings import SMTP_PORT
+from app.settings import SMTP_USERNAME
+from app.settings import SMTP_PASSWORD
 
-
-def send_email(
-    to_email: str, subject: str, body: str,
-):
+def send_email(to_email: str, subject: str, body: str):
     """Send an email."""
-    smtp_host = config("SMTP_HOST", cast=str, default=False)
-    smtp_port = config("SMTP_PORT", cast=str, default=False)
-    smtp_username = config("SMTP_USERNAME", cast=str, default=False)
-    smtp_password = config("SMTP_PASSWORD", cast=str, default=False)
-
     msg = MIMEMultipart("alternative")
     # me == the sender's email address
     # you == the recipient's email address
@@ -35,6 +31,10 @@ def send_email(
 
     msg.attach(MIMEText(text, "plain"))
     msg.attach(MIMEText(html, "html"))
+    
+    if TESTING:
+        # Do not send an actual email if unittesting.
+        return
 
-    smtpObj = smtplib.SMTP(smtp_host)
+    smtpObj = smtplib.SMTP(SMTP_HOST)
     smtpObj.send_message(msg)

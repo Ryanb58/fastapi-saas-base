@@ -6,21 +6,18 @@ from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
 import jwt
 
-from app.config import config
 from app.dependencies import get_db
 from app.schemas.auth import Token
 from app.schemas.account import Account
 from app.controllers.account import get_account
 from app.controllers.account import get_account_by_email
 from app.models.account import Password
-
+from app.settings import SECRET_KEY
+from app.settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
 # to get a string like this run:
 # openssl rand -hex 32
-SECRET_KEY = config("SECRET_KEY", cast=str, default=False)
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 

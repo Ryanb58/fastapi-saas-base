@@ -1,10 +1,9 @@
 import stripe
 
-from app.config import config
+from app.settings import STRIPE_API_SECRET
+from app.settings import STRIPE_DEFAULT_PLAN_ID
 
-
-stripe.api_key = config("STRIPE_API_SECRET", cast=str, default=False)
-
+stripe.api_key = STRIPE_API_SECRET
 
 def create_customer(email, full_name, tenant_obj):
     """Create a customer object in stripe."""
@@ -22,9 +21,7 @@ def create_customer(email, full_name, tenant_obj):
 
 def create_subscription(customer_stripe_id, plan_stripe_ids):
     """Subscribe customer to strip plan."""
-    default_plan_stripe_id = config("STRIPE_DEFAULT_PLAN_ID", cast=str, default=False)
-
-    plan_stripe_ids = [default_plan_stripe_id]
+    plan_stripe_ids = [STRIPE_DEFAULT_PLAN_ID]
 
     return stripe.Subscription.create(
         customer=customer_stripe_id,

@@ -4,22 +4,19 @@ from sqlalchemy.orm import Session
 from fastapi import Depends
 import jwt
 
-from app.config import config
 from app.schemas import account as schemas
 from app.models.account import Account
 from app.models.account import EmailAddress
 from app.models.account import Password
 from app.utils.email import send_email
-
+from app.settings import SECRET_KEY
+from app.settings import FRONTEND_BASE_URL
+from app.settings import EMAIL_TOKEN_EXPIRE_MINUTES
 #### Accounts
 
 # to get a string like this run:
 # openssl rand -hex 32
-SECRET_KEY = config("SECRET_KEY", cast=str, default=False)
 ALGORITHM = "HS256"
-EMAIL_TOKEN_EXPIRE_MINUTES = 30
-FRONTEND_URL = config("FRONTEND_URL", cast=str, default="")
-
 
 def get_account(db_session: Session, id: int):
     return db_session.query(Account).filter(Account.id == id).first()
@@ -47,7 +44,7 @@ def create_account(
     is_system_admin: bool = False,
     is_active: bool = False,
     send_registration_email: bool = True,
-    is_verified: bool = False
+    is_verified: bool = False,
 ):
     """Create an user account."""
     account_obj = Account(
@@ -73,7 +70,7 @@ def create_account(
     if send_registration_email:
         token = create_email_verification_token(email_obj)
         registration_link = "{}/{}/verify?token={}".format(
-            FRONTEND_URL, email_obj.id, token
+            FRONTEND_BASE_URL, email_obj.id, token
         )
         send_email(
             to_email=email,
@@ -124,7 +121,7 @@ def create_email_address(
     if send_verification_email:
         token = create_email_verification_token(email_obj)
         verification_link = "{}/{}/verify?token={}".format(
-            FRONTEND_URL, email_obj.id, token
+            FRONTEND_BASE_URL, email_obj.id, token
         )
         send_email(
             to_email=email,
