@@ -22,6 +22,9 @@ class RegisterTestCase(TestBase):
             status=200,
         )
 
+        # Make sure no emails have been sent.
+        mock_send_email.assert_not_called()
+
         payload = {
             "first_name": "Andy",
             "last_name": "Benard",
@@ -31,6 +34,9 @@ class RegisterTestCase(TestBase):
             "slug": "dunder-mifflin-scranton",
         }
         response = self.client.post("/auth/register", json=payload)
+
+        # Validate that the registration email was sent.
+        mock_send_email.assert_called_once()
 
         assert response.status_code == 201
         assert self.db_session.query(Account).count() == 1
