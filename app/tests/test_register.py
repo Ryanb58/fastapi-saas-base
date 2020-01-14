@@ -1,7 +1,7 @@
 import responses
 from unittest.mock import patch
 
-from app.tests.base import TestBase
+from app.tests.conftests import TestBase
 from app.models.account import Account, EmailAddress
 from app.models.tenant import Tenant
 from app.controllers.account import (

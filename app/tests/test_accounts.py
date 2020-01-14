@@ -1,4 +1,4 @@
-from app.tests.base import TestBase
+from app.tests.conftests import TestBase
 
 
 class AccountsTestCase(TestBase):
