@@ -193,7 +193,6 @@ def mark_email_as_verified(db_session: Session, email_id: int):
     email_obj.verified = True
     email_obj.verified_on = datetime.now()
 
-    db_session.add(account_obj)
     db_session.add(email_obj)
     db_session.commit()
 

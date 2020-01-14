@@ -56,7 +56,7 @@ class RegisterTestCase(TestBase):
         )
         token = create_token_from_id(email_obj.id)
         response = self.client.post(
-            "/auth/verify?token={}".format(token), data=payload
+            "/auth/verify?token={}".format(token)
         )
         assert response.status_code == 200
 
