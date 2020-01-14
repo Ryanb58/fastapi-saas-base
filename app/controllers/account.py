@@ -18,6 +18,26 @@ from app.settings import EMAIL_TOKEN_EXPIRE_MINUTES
 # openssl rand -hex 32
 ALGORITHM = "HS256"
 
+def mark_account_as_verified_and_active(db_session: Session, token:int):
+    """Mark an account as verified and active."""
+    account_id = get_id_from_token(token)
+    if not account_id:
+        raise NotImplementedError("Invalid token.")
+    account_obj = db_session.query(Account).get(account_id)
+ 
+    # Mark account as active.
+    account_obj.is_active = True
+
+    # Mark email as verified.
+    email_obj = account_obj.primary_email_address
+    email_obj.verified = True
+    email_obj.verified_on = datetime.now()
+
+    db_session.add(account_obj)
+    db_session.add(email_obj)
+    db_session.commit()
+
+
 def get_account(db_session: Session, id: int):
     return db_session.query(Account).filter(Account.id == id).first()
 
@@ -68,7 +88,7 @@ def create_account(
 
     # Send registration email.
     if send_registration_email:
-        token = create_email_verification_token(email_obj)
+        token = create_token_from_id(email_obj.id)
         registration_link = "{}/{}/verify?token={}".format(
             FRONTEND_BASE_URL, email_obj.id, token
         )
@@ -119,7 +139,7 @@ def create_email_address(
 
     # Send verification email.
     if send_verification_email:
-        token = create_email_verification_token(email_obj)
+        token = create_token_from_id(email_obj.id)
         verification_link = "{}/{}/verify?token={}".format(
             FRONTEND_BASE_URL, email_obj.id, token
         )
@@ -137,14 +157,14 @@ def create_email_address(
     return email_obj
 
 
-def create_email_verification_token(email_obj):
+def create_token_from_id(id):
     """
     Create a token that can be used to verify a email address.
     
     Expires in 1 hour.
     """
     to_encode = {
-        "id": email_obj.id,
+        "id": id,
     }
     expire = datetime.utcnow() + timedelta(minutes=EMAIL_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
@@ -152,8 +172,8 @@ def create_email_verification_token(email_obj):
     return encoded_jwt.decode("utf-8")
 
 
-def get_email_id_from_token(token):
-    """Mark an email as verified if token is legit."""
+def get_id_from_token(token):
+    """Get an id from a signed token."""
     try:
         token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except jwt.ExpiredSignatureError:
@@ -172,9 +192,6 @@ def mark_email_as_verified(db_session: Session, email_id: int):
     # Mark email as verified.
     email_obj.verified = True
     email_obj.verified_on = datetime.now()
-    # Mark account as active.
-    account_obj = email_obj.account
-    account_obj.is_active = True
 
     db_session.add(account_obj)
     db_session.add(email_obj)
@@ -182,8 +199,8 @@ def mark_email_as_verified(db_session: Session, email_id: int):
 
 
 def verify_email_address(db_session: Session, token: str):
-    email_id = get_email_id_from_token(token)
+    email_id = get_id_from_token(token)
     if not email_id:
-        raise NotImplementedError("Token not valid or email_id wrong...")
+        raise NotImplementedError("Invalid token.")
 
     mark_email_as_verified(db_session, email_id)

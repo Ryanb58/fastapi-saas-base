@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_201_CREATED, HTTP_409_CONFLICT
+from starlette.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_201_CREATED, HTTP_409_CONFLICT
 
 from app.dependencies import get_db
 from app.controllers.auth import (
@@ -15,8 +15,15 @@ from app.controllers.auth import (
 from app.dependencies.auth import get_current_account
 from app.schemas.tenant import TenantAccountCreate
 from app.controllers.tenant import create_tenant_and_account
+from app.controllers.account import mark_account_as_verified_and_active
 
 router = APIRouter()
+
+
+@router.post("/verify", status_code=HTTP_200_OK)
+def verify_account(token: str = "", db_session: Session = Depends(get_db)):
+    mark_account_as_verified_and_active(db_session, token)
+    return
 
 
 @router.post("/token", response_model=Token)

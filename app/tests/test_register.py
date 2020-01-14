@@ -5,7 +5,7 @@ from app.tests.conftests import TestBase
 from app.models.account import Account, EmailAddress
 from app.models.tenant import Tenant
 from app.controllers.account import (
-    create_email_verification_token,
+    create_token_from_id,
     verify_email_address,
 )
 
@@ -54,9 +54,9 @@ class RegisterTestCase(TestBase):
             .filter(EmailAddress.email == "andy.bernard@example.com")
             .first()
         )
-        token = create_email_verification_token(email_obj)
+        token = create_token_from_id(email_obj.id)
         response = self.client.post(
-            "/email_addresses/verify?token={}".format(token), data=payload
+            "/auth/verify?token={}".format(token), data=payload
         )
         assert response.status_code == 200
 

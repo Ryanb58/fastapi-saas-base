@@ -37,6 +37,10 @@ class Account(BaseModel):
         return self.email_addresses.filter_by(primary=True).first().email
 
     @property
+    def primary_email_address(self):
+        return self.email_addresses.filter_by(primary=True).first()
+
+    @property
     def full_name(self):
         return "{} {}".format(self.first_name, self.last_name)
 
